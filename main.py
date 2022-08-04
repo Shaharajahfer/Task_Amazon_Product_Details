@@ -16,7 +16,7 @@ SHEETY_ENDPOINT = "https://api.sheety.co/31ce745ac0c6040284abe8b2457955b5/copyOf
 response = requests.get(url=SHEETY_ENDPOINT)
 data = response.json()
 sheet_data = data["sheet1"]
-pprint(sheet_data)
+# pprint(sheet_data)
 
 list = []
 for ele in range(0, 100):
@@ -25,7 +25,7 @@ for ele in range(0, 100):
     asin = sheet_data[ele]["asin"]
     url = f"https://www.amazon.{country_code}/dp/{asin}"
     driver.get(url)
-    time.sleep(10)
+    time.sleep(2)
 
     # Extracting Product Title
     try:
@@ -54,14 +54,19 @@ for ele in range(0, 100):
                 print(price_symbol.text)
                 price_whole = driver.find_element(by=By.CLASS_NAME, value="a-price-whole")
                 price_fraction = driver.find_element(by=By.CLASS_NAME, value="a-price-fraction")
-                price = f"{price_symbol.text}{price_whole.text}.{price_fraction.text}"
+                price = f"{price_whole.text}.{price_fraction.text}"
             except NoSuchElementException:
                 try:
                     price_product = driver.find_element(by=By.XPATH,
                                                         value="//*[@id='a-autoid-1-announce']/span[2]")
                     price = price_product.text
-                except AttributeError:
-                    price = ""
+                except NoSuchElementException:
+                    try:
+                        price_product = driver.find_element(by=By.XPATH,
+                                                        value="//*[@id='a-autoid-3-announce']/span[2]")
+                        price = price_product.text
+                    except AttributeError:
+                        price = ""
 
         #Extracting Product Details
         try:
@@ -80,8 +85,9 @@ for ele in range(0, 100):
         dict["Product_Details"] = product_details_value
 
     list.append(dict)
+    print(list)
    
-print(list)
+# print(list)
 
 final_data = json.dumps(list, indent=2)
 # print(final_data)
