@@ -1,4 +1,4 @@
-# Task_Amazon_Product_Details
+# Amazon_Sites_And_Product_Details
 
 In this project, I had scraped different amazon sites using Selenium and the result is written in a JSON file.
 
